@@ -11,14 +11,39 @@
 Supabase  client for PHP:
 - Realtime database, Storage, Authentication and many more.
 - When you creating your supabase table, make sure RLS (Row Level Security) option be [×] disable.
-- If RLS are enable [✓] maybe you getting some error so you need to use `Auth class`.
-Auth class coming soon.
+- If RLS are enable [✓] maybe you getting some errors.
+
+
+<details>
+<summary><h3>  ⚠️ Warning  </h3>
+</summary>
+<p><b><i>
+if you push the code to production while Row-Level Security (RLS) is disabled, 
+it can pose a security threat to your application. To secure your app, please enable Row-Level Security. 
+Otherwise, write an Object-Oriented PDO connection with PostgreSQL. 
+</i>
+</b>
+</p>
+
+### Env config code:
+ ```env
+HOST=aws-o-ap-south-pool.supabase.com
+PORT=6543
+USERNAME=postgres.grufgrcytvrh
+PASSWORD=[Your Password]
+DATABASE=postgres
+```
+</details>
+
+
 
 ### `Install`
 * Install Supabase client for our project.
 * Than we are require supabase-client by composer.
 
 ```bash
+composer require supabase-php/supabase-client      # letest
+# OR Downloads old version
 composer require supabase-php/supabase-client:"1.0.4"
 ```
 
@@ -82,7 +107,8 @@ $data = [
   'version' => '8.3'
 ];
 
-$client->postData('table name', $data);
+$client->postData('table name', $data, 'id');
+// 3rd option on_conflict
 ```
 
 ### `updateData()`

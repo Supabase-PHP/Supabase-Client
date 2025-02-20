@@ -1,10 +1,12 @@
 <?php
+declare(strict_types=1);
+
 namespace Supabase;
 use Supabase\Supabase;
 
 class Functions extends Supabase
 {
-  public function getAllData($table=null)
+  public function getAllData(?string $table=null)
   {
     if (!isset($table)) {
       echo "Please provide your Supabase table name.";
@@ -16,7 +18,7 @@ class Functions extends Supabase
     }
   }
 
-  public function getSingleData($table=null, $query=[])
+  public function getSingleData(?string $table=null, array $query=[])
   {
     if (!isset($table)) {
       echo "Please provide your Supabase table name.";
@@ -30,20 +32,26 @@ class Functions extends Supabase
     }
   }
 
-  public function postData($table=null, $query=[])
+  public function postData(?string $table=null, array $query=[], ?string $on_conflict=null)
   {
-    if (!isset($table)) {
-      echo "Please provide your Supabase table name.";
-    } elseif (!isset($query)) {
-      echo "Please provide your data.";
-    } else {
-      $path = "$this->url/$table";
-      $html = $this->grab($path, "POST", json_encode($query));
-      return $html;
-    }
+	if (!isset($table)) {
+	  echo "Please provide your Supabase table name.";
+	} elseif (!isset($query)) {
+	  echo "Please provide your data.";
+	} else {
+	  // If $on_conflict is provided, append to the path
+	  if (!empty($on_conflict)) {
+		$path = "$this->url/$table?on_conflict=$on_conflict";
+	  } else {
+		$path = "$this->url/$table";
+	  }
+
+	  $html = $this->grab($path, "POST", json_encode($query));
+    return $html;
+  }
   }
 
-  public function updateData($table=null, int $id=null, $query=[])
+  public function updateData(?string $table=null, ?int $id=null, array $query=[])
   {
     if (!isset($table)) {
       echo "Please provide your Supabase table name.";
@@ -58,7 +66,7 @@ class Functions extends Supabase
     }
   }
 
-  public function deleteData($table=null, int $id=null)
+  public function deleteData(?string $table=null, ?int $id=null)
   {
     if (!isset($table)) {
       echo "Please provide your Supabase table name.";
@@ -71,7 +79,7 @@ class Functions extends Supabase
     }
   }
 
-  public function pages($table=null)
+  public function pages(?string $table=null)
   {
     $path = "$this->url/$table?select=*";
     $html = $this->grab($path, "GET");
@@ -79,7 +87,7 @@ class Functions extends Supabase
     return $data;
   }
 
-  public function filter($table=null, int $range=null)
+  public function filter(?string $table=null, ?int $range=null)
   {
     $path = "$this->url/$table?id=eq.$range&select=*";
     $html = $this->grab($path, "GET");
@@ -87,7 +95,7 @@ class Functions extends Supabase
     return $data;
   }
 
-  public function matchs($table=null, $query=[])
+  public function matchs(?string $table=null, array $query=[])
   {
     $path = "$this->url/$table";
     $html = $this->grab($path, "POST", json_encode($query));
